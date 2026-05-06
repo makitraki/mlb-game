@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Web Games</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      text-align: center;
+      max-width: 800px;
+    }
+
+    h1 {
+      color: white;
+      font-size: 3em;
+      margin-bottom: 50px;
+      text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .games-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .game-card {
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      text-decoration: none;
+      color: inherit;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: none;
+    }
+
+    .game-card:hover {
+      transform: translateY(-15px);
+      box-shadow: 0 30px 80px rgba(0, 0, 0, 0.4);
+    }
+
+    .game-card:active {
+      transform: translateY(-5px);
+    }
+
+    .game-icon {
+      font-size: 4em;
+      margin-bottom: 20px;
+    }
+
+    .game-title {
+      font-size: 1.8em;
+      font-weight: 700;
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .game-description {
+      color: #666;
+      font-size: 1em;
+      line-height: 1.5;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 2em;
+      }
+
+      .games-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>🎮 My Games</h1>
+
+  <div class="games-grid">
+    <a href="index.html" class="game-card">
+      <div class="game-icon">⚾</div>
+      <div class="game-title">MLB Guessing Game</div>
+      <div class="game-description">Guess the MLB player based on hints! 2-4 players with a 120-second timer.</div>
+    </a>
+
+    <a href="clock.html" class="game-card">
+      <div class="game-icon">🌍</div>
+      <div class="game-title">World Clock</div>
+      <div class="game-description">See the current time in 12 major cities around the world with analog clocks.</div>
+    </a>
+  </div>
+</div>
+
+</body>
+</html>
