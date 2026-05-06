@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MLB Guessing Game</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: white;
+      border-radius: 20px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+      max-width: 600px;
+      width: 100%;
+      padding: 40px;
+    }
+
+    h1 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 30px;
+      font-size: 2.5em;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .setup-section {
+      text-align: center;
+    }
+
+    .setup-section label {
+      display: block;
+      margin-bottom: 15px;
+      color: #555;
+      font-size: 1.1em;
+      font-weight: 600;
+    }
+
+    select {
+      padding: 12px 20px;
+      font-size: 1em;
+      border: 2px solid #667eea;
+      border-radius: 8px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-bottom: 25px;
+    }
+
+    select:hover {
+      border-color: #764ba2;
+      box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+    }
+
+    button {
+      padding: 14px 40px;
+      margin: 8px;
+      font-size: 1em;
+      font-weight: 600;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 25px rgba(102, 126, 234, 0.4);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+    }
+
+    .btn-secondary {
+      background: #f0f0f0;
+      color: #333;
+      border: 2px solid #ddd;
+    }
+
+    .btn-secondary:hover {
+      background: #e0e0e0;
+      border-color: #667eea;
+    }
+
+    #game {
+      display: none;
+    }
+
+    .game-section {
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .game-master {
+      text-align: center;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 25px;
+      font-size: 1.3em;
+      font-weight: 600;
+    }
+
+    .hint-box {
+      background: #f8f9fa;
+      border-left: 4px solid #667eea;
+      padding: 15px 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 1.05em;
+      color: #555;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 2em;
+      font-weight: bold;
+      margin: 20px 0;
+      color: #333;
+    }
+
+    .timer.warning {
+      color: #ff9800;
+      animation: pulse 1s infinite;
+    }
+
+    .timer.danger {
+      color: #f44336;
+      animation: pulse 0.5s infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    input {
+      flex: 1;
+      padding: 12px 15px;
+      font-size: 1em;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #667eea;
+      box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .result-box {
+      text-align: center;
+      padding: 20px;
+      margin: 20px 0;
+      border-radius: 8px;
+      font-size: 1.2em;
+      font-weight: 600;
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .result-box.correct {
+      background: #e8f5e9;
+      color: #2e7d32;
+      border: 2px solid #4caf50;
+    }
+
+    .result-box.wrong {
+      background: #ffebee;
+      color: #c62828;
+      border: 2px solid #f44336;
+    }
+
+    .result-box.timeout {
+      background: #fff3e0;
+      color: #e65100;
+      border: 2px solid #ff9800;
+    }
+
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      display: inline-block;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+      }
+
+      h1 {
+        font-size: 1.8em;
+      }
+
+      .input-group {
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+        margin: 8px 0;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>⚾ MLB Guessing Game</h1>
+
+  <div id="setup" class="setup-section">
+    <label>How many players?</label>
+    <select id="playerCount">
+      <option value="2">2 Players</option>
+      <option value="3">3 Players</option>
+      <option value="4">4 Players</option>
+    </select>
+    <br>
+    <button class="btn-primary" onclick="startGame()">Start Game</button>
+  </div>
+
+  <div id="game">
+    <div class="game-section">
+      <div class="game-master" id="gm"></div>
+
+      <div class="hint-box">
+        <strong>Hint:</strong> <span id="hint"></span>
+      </div>
+
+      <div class="timer" id="timer">Time Left: 120s</div>
+
+      <div class="input-group">
+        <input type="text" id="guessInput" placeholder="Enter your guess..." autocomplete="off">
+        <button class="btn-primary" onclick="submitGuess()">Guess</button>
+      </div>
+
+      <div class="result-box" id="result"></div>
+
+      <div class="button-group">
+        <button class="btn-secondary" onclick="nextRound()">Next Round</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const players = [
+  {
+    name: "Derek Jeter",
+    hints: ["Played for the Yankees", "Shortstop", "5× World Series winner"]
+  },
+  {
+    name: "Barry Bonds",
+    hints: ["Played for Giants", "Outfielder", "Home run record holder"]
+  },
+  {
+    name: "David Ortiz",
+    hints: ["Red Sox legend", "Designated hitter", "Clutch postseason player"]
+  },
+  {
+    name: "Mike Trout",
+    hints: ["Angels player", "Outfielder", "Multiple MVP awards"]
+  },
+  {
+    name: "Babe Ruth",
+    hints: ["Yankee legend", "Outfielder", "Called the Sultan of Swat"]
+  },
+  {
+    name: "Ted Williams",
+    hints: ["Red Sox player", "Outfielder", "Last .400 hitter"]
+  },
+  {
+    name: "Mickey Mantle",
+    hints: ["Yankees center fielder", "Triple Crown winner", "Played in 1950s-60s"]
+  },
+  {
+    name: "Stan the Man Musial",
+    hints: ["St. Louis Cardinals", "Outfielder/1B", "3,000+ career hits"]
+  }
+];
+
+let gamePlayers = [];
+let scores = [];
+let currentGM = 0;
+let currentPlayer;
+let hintIndex = 0;
+let timer;
+let timeLeft = 120;
+let guessed = false;
+
+function startGame() {
+  const count = parseInt(document.getElementById("playerCount").value);
+
+  gamePlayers = [];
+  scores = [];
+
+  for (let i = 1; i <= count; i++) {
+    gamePlayers.push("Player " + i);
+    scores.push(0);
+  }
+
+  document.getElementById("setup").style.display = "none";
+  document.getElementById("game").style.display = "block";
+
+  nextRound();
+}
+
+function nextRound() {
+  guessed = false;
+  hintIndex = 0;
+  timeLeft = 120;
+
+  currentPlayer = players[Math.floor(Math.random() * players.length)];
+
+  document.getElementById("gm").innerText =
+    gamePlayers[currentGM] + " is the Game Master";
+
+  document.getElementById("hint").innerText =
+    currentPlayer.hints[hintIndex];
+
+  document.getElementById("result").innerText = "";
+  document.getElementById("result").className = "";
+
+  document.getElementById("guessInput").focus();
+
+  startTimer();
+
+  currentGM = (currentGM + 1) % gamePlayers.length;
+}
+
+function startTimer() {
+  clearInterval(timer);
+
+  timer = setInterval(() => {
+    timeLeft--;
+    const timerEl = document.getElementById("timer");
+    timerEl.innerText = "Time Left: " + timeLeft + "s";
+    
+    timerEl.className = "";
+    if (timeLeft <= 20) {
+      timerEl.className = "danger";
+    } else if (timeLeft <= 40) {
+      timerEl.className = "warning";
+    }
+
+    if (timeLeft === 80 || timeLeft === 40) {
+      hintIndex++;
+      if (currentPlayer.hints[hintIndex]) {
+        document.getElementById("hint").innerText =
+          currentPlayer.hints[hintIndex];
+      }
+    }
+
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      document.getElementById("result").innerText =
+        "⏰ Time's up! The answer was: " + currentPlayer.name;
+      document.getElementById("result").className = "result-box timeout";
+    }
+  }, 1000);
+}
+
+function submitGuess() {
+  if (guessed) return;
+
+  const guess = document.getElementById("guessInput").value.trim();
+
+  if (!guess) {
+    alert("Please enter a guess!");
+    return;
+  }
+
+  if (guess.toLowerCase() === currentPlayer.name.toLowerCase()) {
+    guessed = true;
+    clearInterval(timer);
+
+    document.getElementById("result").innerText =
+      "✓ Correct! It was " + currentPlayer.name;
+    document.getElementById("result").className = "result-box correct";
+  } else {
+    document.getElementById("result").innerText =
+      "✗ Wrong guess! Try again or wait for the next hint.";
+    document.getElementById("result").className = "result-box wrong";
+  }
+
+  document.getElementById("guessInput").value = "";
+}
+
+document.getElementById("guessInput").addEventListener("keypress", function(event) {
+  if (event.key === "Enter") {
+    submitGuess();
+  }
+});
+</script>
+
+</body>
+</html>
